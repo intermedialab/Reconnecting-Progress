@@ -15,17 +15,17 @@
     <node2>
         <hostname>4.local</hostname>
         <color>
-            <r>255</r>
-            <g>0</g>
+            <r>0</r>
+            <g>255</g>
             <b>0</b>
         </color>
     </node2>
     <node3>
         <hostname>5.local</hostname>
         <color>
-            <r>255</r>
+            <r>0</r>
             <g>0</g>
-            <b>0</b>
+            <b>255  </b>
         </color>
     </node3>
 </nodes>
