@@ -5,11 +5,11 @@ void testApp::setup(){
     ofSetWindowTitle("Sender");
     ofSetWindowPosition(0, 0);
     ofSetFrameRate(70);
-
+    
     ofLogLevel(OF_LOG_WARNING);
-
+    
     // set own hostname
-
+    
     for (int i = 0; i < 100; i++) {
         FILE* stream = popen( "hostname", "r" );
         ostringstream output;
@@ -36,7 +36,7 @@ void testApp::setup(){
     settingsLoaded = XML.loadFile("globalSettings.xml");
     
     portNumber = XML.getValue("global:network:port", 13000);
-
+    
     //sender.setup(640, 480, "jive.local", 1234);
     //sender.setup(800, 800.*9./16., localHostname, portNumber);
     
@@ -67,7 +67,7 @@ void testApp::setup(){
             receivers[receiverNumber] = new ofxStreamerReceiver;
             receivers[receiverNumber]->setup(portNumber,nodes[i]->hostname);
             receiverNumber++;
-        
+            
         }
     }
     //oscReceiver.setup(9999);
@@ -109,26 +109,29 @@ void testApp::update(){
         //    x264Encoder.encodeFrame(data, 640 * 480 * 3);
         
         sender.sendFrame();
-   }
-
+    }
+    
     for (int i = 0; i < 2 ; i++) {
         if(receivers[i]){
+            if(!receivers[i]->isConnected()){
+                receivers[i]->setup(receivers[i]->port, receivers[i]->host);
+            }
             receivers[i]->update();
         }
     }
     
     
-   /* if(oscReceiver.hasWaitingMessages()){
-        ofxOscMessage msg;
-        oscReceiver.getNextMessage(&msg);
-        
-        cout<<"Got message "<<msg.getAddress()<<endl;
-        
-        latency = ofGetElapsedTimeMillis() -  sendPingTime;
-        
-        cout<<"Diff "<<latency<<endl;
-    }*/
-
+    /* if(oscReceiver.hasWaitingMessages()){
+     ofxOscMessage msg;
+     oscReceiver.getNextMessage(&msg);
+     
+     cout<<"Got message "<<msg.getAddress()<<endl;
+     
+     latency = ofGetElapsedTimeMillis() -  sendPingTime;
+     
+     cout<<"Diff "<<latency<<endl;
+     }*/
+    
 }
 
 //--------------------------------------------------------------
@@ -147,9 +150,15 @@ void testApp::draw(){
         } else {
             for (int j = 0; j < 2 ; j++) {
                 if (receivers[j]) {
-                if(receivers[j]->host.compare(currentNode->hostname) == 0){
-                    receivers[j]->draw(0, 0, receivers[j]->width, receivers[j]->height);
-                }
+                    if (receivers[j]->isConnected()) {
+                        if(ofToString(receivers[j]->host).compare(ofToString(currentNode->hostname)) == 0){
+                            receivers[j]->draw(0, 0, receivers[j]->width, receivers[j]->height);
+                        }
+                    } else {
+                        ofDrawBitmapString("connecting to " + ofToString(currentNode->hostname), 20,20*(j+1));
+                    }
+                } else {
+                    ofDrawBitmapString("initialising " + ofToString(currentNode->hostname), 20,20*(j+1));
                 }
             }
         }
@@ -165,22 +174,22 @@ void testApp::draw(){
     
     
     /*
-    int y = 15;
-    int x = 650;
-    
-    ofDrawBitmapString("Streamer Sender Example", 650, y);
-    ofDrawBitmapString("Frame Num: \t\t"+ofToString(sender.frameNum), 650, y+=20);
-    ofDrawBitmapString("Frame Rate: "+ofToString(sender.frameRate,1)+" fps", 650, y+=15);
-    ofDrawBitmapString("bitrate: "+ofToString(sender.bitrate)+" kbits/s", 650, y+=15);
-    ofDrawBitmapString("URL: "+sender.url, 650, y+=35);
-    ofDrawBitmapString("Preset: "+sender.preset, 650, y+=15);
-    
-    if(latency){
-        ofDrawBitmapString("Latency: "+ofToString(latency)+" ms", 650, y+=15);
-
-    } else {
-        ofDrawBitmapString("Latency: Press any key", 650, y+=15);
-    }
+     int y = 15;
+     int x = 650;
+     
+     ofDrawBitmapString("Streamer Sender Example", 650, y);
+     ofDrawBitmapString("Frame Num: \t\t"+ofToString(sender.frameNum), 650, y+=20);
+     ofDrawBitmapString("Frame Rate: "+ofToString(sender.frameRate,1)+" fps", 650, y+=15);
+     ofDrawBitmapString("bitrate: "+ofToString(sender.bitrate)+" kbits/s", 650, y+=15);
+     ofDrawBitmapString("URL: "+sender.url, 650, y+=35);
+     ofDrawBitmapString("Preset: "+sender.preset, 650, y+=15);
+     
+     if(latency){
+     ofDrawBitmapString("Latency: "+ofToString(latency)+" ms", 650, y+=15);
+     
+     } else {
+     ofDrawBitmapString("Latency: Press any key", 650, y+=15);
+     }
      */
 }
 
@@ -206,40 +215,40 @@ void testApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::windowResized(int w, int h){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::gotMessage(ofMessage msg){
-
+    
 }
 
 //--------------------------------------------------------------
 void testApp::dragEvent(ofDragInfo dragInfo){ 
-
+    
 }
