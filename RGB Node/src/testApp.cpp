@@ -1,5 +1,8 @@
 #include "testApp.h"
 
+int width = 800;
+int height = 600;
+
 //--------------------------------------------------------------
 void testApp::setup(){
     ofSetWindowTitle("Sender");
@@ -28,23 +31,22 @@ void testApp::setup(){
         }
     }
     
-    
     cout << localHostname << endl;
     
     // load settings
     
     settingsLoaded = XML.loadFile("globalSettings.xml");
     
-    portNumber = XML.getValue("global:network:port", 13000);
+    portNumber = XML.getValue("global:network:port", 1234);
     
     //sender.setup(640, 480, "jive.local", 1234);
     //sender.setup(800, 800.*9./16., localHostname, portNumber);
     
-    sender.setup(800, 800.*9./16.);
+    sender.setup(width, height);
     
-    data = (unsigned char*) malloc(sizeof(char)* sender.width * sender.height * 3*10);
+    data = (unsigned char*) malloc(sizeof(char)* width * height * 3*10);
     
-    grabber.initGrabber(sender.width, sender.height);
+    grabber.initGrabber(width, height);
     
     int receiverNumber = 0;
     
@@ -64,7 +66,7 @@ void testApp::setup(){
             nodeMe = nodes[i];
             cout << "i am " << nodeMe->hostname << endl;
         } else {
-            receivers[receiverNumber] = new ofxStreamerReceiver;
+            receivers[receiverNumber] = new ofxStreamerReceiver();
             receivers[receiverNumber]->setup(portNumber,nodes[i]->hostname);
             receiverNumber++;
             
@@ -88,24 +90,24 @@ void testApp::update(){
         sendPingTime = ofGetElapsedTimeMillis();
         
         
-        unsigned char bytes[sender.width*sender.height*3];
-        for(int i=0;i<sender.width*sender.height*3;i++){
+        unsigned char bytes[width*height*3];
+        for(int i=0;i<width*height*3;i++){
             bytes[i] = 255;
         }
         
         
-        sender.encodeFrame(bytes, sender.width*sender.height*3);
+        sender.encodeFrame(bytes, width*height*3);
         sender.sendFrame();
         
     }
     else if(grabber.isFrameNew()){
         
         ofBuffer buffer;
-        buffer.set((char*)data, sender.width*sender.height * 3);
+        buffer.set((char*)data, width*height * 3);
         
-        inputImage.setFromPixels(data, sender.width, sender.height, OF_IMAGE_COLOR);
+        inputImage.setFromPixels(data, width, height, OF_IMAGE_COLOR);
         
-        sender.encodeFrame(grabber.getPixels(), sender.width * sender.height * 3);
+        sender.encodeFrame(grabber.getPixels(), width * height * 3);
         //    x264Encoder.encodeFrame(data, 640 * 480 * 3);
         
         sender.sendFrame();
@@ -138,7 +140,10 @@ void testApp::update(){
 void testApp::draw(){
     ofClear(0);
     ofEnableBlendMode(OF_BLENDMODE_ADD);
-    
+
+    int y = 15;
+    int x = width + 20;
+
     for (int i = 0; i < 3; i++){
         nodePoint * currentNode = nodes[i];
         
@@ -146,19 +151,30 @@ void testApp::draw(){
         ofSetColor(currentNode->color.r, currentNode->color.g, currentNode->color.b);
         
         if(currentNode == nodeMe){
-            grabber.draw(0, 0, grabber.width, grabber.height);
+            grabber.draw(0, 0, width, height);
+            
+            ofDrawBitmapString("Streamer Sender Example", x, y);
+            ofDrawBitmapString("Frame Num: \t\t"+ofToString(sender.frameNum), x, y+=20);
+            ofDrawBitmapString("Frame Rate: "+ofToString(sender.frameRate,1)+" fps", x, y+=15);
+            ofDrawBitmapString("bitrate: "+ofToString(sender.bitrate)+" kbits/s", x, y+=15);
+            ofDrawBitmapString("URL: "+sender.url, x, y+=35);
+            ofDrawBitmapString("Preset: "+sender.preset, x, y+=15);
+
+            
         } else {
             for (int j = 0; j < 2 ; j++) {
                 if (receivers[j]) {
-                    if (receivers[j]->isConnected()) {
-                        if(ofToString(receivers[j]->host).compare(ofToString(currentNode->hostname)) == 0){
-                            receivers[j]->draw(0, 0, receivers[j]->width, receivers[j]->height);
+                    if(ofToString(receivers[j]->host).compare(ofToString(currentNode->hostname)) == 0){
+                        if (receivers[j]->isConnected()) {
+                            cout << "FOUND" + currentNode->hostname << endl;
+                            receivers[j]->draw(0, 0, width, height);
+                            
+                        } else {
+                            ofDrawBitmapString("connecting to " + ofToString(receivers[j]->host),  x, y+=35);
                         }
-                    } else {
-                        ofDrawBitmapString("connecting to " + ofToString(currentNode->hostname), 20,20*(j+1));
                     }
                 } else {
-                    ofDrawBitmapString("initialising " + ofToString(currentNode->hostname), 20,20*(j+1));
+                    ofDrawBitmapString("initialising " + ofToString(receivers[j]->host),  x, y+=35);
                 }
             }
         }
@@ -172,25 +188,6 @@ void testApp::draw(){
         
     }
     
-    
-    /*
-     int y = 15;
-     int x = 650;
-     
-     ofDrawBitmapString("Streamer Sender Example", 650, y);
-     ofDrawBitmapString("Frame Num: \t\t"+ofToString(sender.frameNum), 650, y+=20);
-     ofDrawBitmapString("Frame Rate: "+ofToString(sender.frameRate,1)+" fps", 650, y+=15);
-     ofDrawBitmapString("bitrate: "+ofToString(sender.bitrate)+" kbits/s", 650, y+=15);
-     ofDrawBitmapString("URL: "+sender.url, 650, y+=35);
-     ofDrawBitmapString("Preset: "+sender.preset, 650, y+=15);
-     
-     if(latency){
-     ofDrawBitmapString("Latency: "+ofToString(latency)+" ms", 650, y+=15);
-     
-     } else {
-     ofDrawBitmapString("Latency: Press any key", 650, y+=15);
-     }
-     */
 }
 
 //--------------------------------------------------------------

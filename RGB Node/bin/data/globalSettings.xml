@@ -1,6 +1,6 @@
 <global>
     <network>
-        <port>27333</port>
+        <port>1234</port>
     </network>
 </global>
 <nodes>
