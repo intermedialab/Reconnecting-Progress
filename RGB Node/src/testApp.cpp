@@ -53,6 +53,7 @@ void testApp::setup(){
         nodes[i]->color.g = XML.getValue("nodes:node" + ofToString(i+1) + ":color:g", 255);
         nodes[i]->color.b = XML.getValue("nodes:node" + ofToString(i+1) + ":color:b", 255);
         nodes[i]->sendsToPort = XML.getValue("nodes:node" + ofToString(i+1) + ":port:sendsto", 10000);
+        nodes[i]->index = i;
         
         cout << nodes[i]->hostname << " = " << localHostname << endl;
         
@@ -69,10 +70,10 @@ void testApp::setup(){
         if(ofToString(nodes[i]->hostname).compare(ofToString(localHostname)) != 0){
         
             receivers[receiverNumber] = new ofxStreamerReceiver();
-            receivers[receiverNumber]->setup(nodes[i]->sendsToPort+i,nodes[i]->hostname);
+            receivers[receiverNumber]->setup(nodes[i]->sendsToPort+nodeMe->index,nodes[i]->hostname);
             
             senders[receiverNumber] = new ofxStreamerSender();
-            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, nodeMe->sendsToPort+i);
+            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, nodeMe->sendsToPort+nodes[i]->index);
 
             receiverNumber++;
                         
