@@ -69,10 +69,10 @@ void testApp::setup(){
         if(ofToString(nodes[i]->hostname).compare(ofToString(localHostname)) != 0){
         
             receivers[receiverNumber] = new ofxStreamerReceiver();
-            receivers[receiverNumber]->setup(nodes[i]->sendsToPort,nodes[i]->hostname);
+            receivers[receiverNumber]->setup(nodes[i]->sendsToPort+i,nodes[i]->hostname);
             
             senders[receiverNumber] = new ofxStreamerSender();
-            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, nodeMe->sendsToPort);
+            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, nodeMe->sendsToPort+i);
 
             receiverNumber++;
                         
