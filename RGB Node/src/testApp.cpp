@@ -52,6 +52,7 @@ void testApp::setup(){
         nodes[i]->color.r = XML.getValue("nodes:node" + ofToString(i+1) + ":color:r", 255);
         nodes[i]->color.g = XML.getValue("nodes:node" + ofToString(i+1) + ":color:g", 255);
         nodes[i]->color.b = XML.getValue("nodes:node" + ofToString(i+1) + ":color:b", 255);
+        nodes[i]->sendsToPort = XML.getValue("nodes:node" + ofToString(i+1) + ":port:sendsto", 10000);
         
         cout << nodes[i]->hostname << " = " << localHostname << endl;
         
@@ -60,23 +61,24 @@ void testApp::setup(){
         if(ofToString(nodes[i]->hostname).compare(ofToString(localHostname)) == 0){
             nodeMe = nodes[i];
             cout << "i am " << nodeMe->hostname << endl;
-        } else {
+        }
+    }
+
+    for(int i = 0; i < 3; i++){
+
+        if(ofToString(nodes[i]->hostname).compare(ofToString(localHostname)) != 0){
+        
             receivers[receiverNumber] = new ofxStreamerReceiver();
-            receivers[receiverNumber]->setup(portNumber,nodes[i]->hostname);
+            receivers[receiverNumber]->setup(nodes[i]->sendsToPort,nodes[i]->hostname);
             
             senders[receiverNumber] = new ofxStreamerSender();
-            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, portNumber);
+            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, nodeMe->sendsToPort);
 
             receiverNumber++;
                         
         }
     }
-    //oscReceiver.setup(9999);
-    
-    if(nodeMe){
-        cout << nodeMe->color << endl;
-    }
-    
+        
 }
 
 //--------------------------------------------------------------
@@ -144,7 +146,14 @@ void testApp::draw(){
                         } else {
                             ofDrawBitmapString("connecting to " + ofToString(receivers[j]->host),  x, y+=35);
                         }
+                        
+                        ofDrawBitmapString("Streamer Receiver Example",  x, y+=35);
+                        ofDrawBitmapString("Frame Num: \t\t"+ofToString(receivers[j]->frameNum), x, y+=20);
+                        ofDrawBitmapString("Frame Rate: "+ofToString(receivers[j]->frameRate,1)+" fps", x, y+=15);
+                        ofDrawBitmapString("bitrate: "+ofToString(receivers[j]->bitrate)+" kbits/s", x, y+=15);
+                        ofDrawBitmapString("URL: "+receivers[j]->url, x, y+=35);
                     }
+
                 } else {
                     ofDrawBitmapString("initialising " + ofToString(receivers[j]->host),  x, y+=35);
                 }
