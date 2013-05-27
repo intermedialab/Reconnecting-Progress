@@ -771,6 +771,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = "RGB NodeDebug";
+				SDKROOT = macosx10.7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -885,6 +886,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = "RGB Node";
+				SDKROOT = macosx10.7;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
