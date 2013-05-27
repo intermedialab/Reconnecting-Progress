@@ -97,7 +97,7 @@ void testApp::update(){
     
     for (int i = 0; i < 2 ; i++) {
         if(receivers[i]){
-            if(!receivers[i]->isConnected()){
+            if(!receivers[i]->isConnected() && ofGetElapsedTimeMillis() % 1000 < 20 ){
                 receivers[i]->setup(receivers[i]->port, receivers[i]->host);
             }
             receivers[i]->update();
@@ -125,12 +125,12 @@ void testApp::draw(){
             
             for (int j = 0; j < 2 ; j++) {
 
-            ofDrawBitmapString("Streamer Sender Example", x, y);
+            ofDrawBitmapString("Streamer Sender Example", x, y+=35);
             ofDrawBitmapString("Frame Num: \t\t"+ofToString(senders[j]->frameNum), x, y+=20);
             ofDrawBitmapString("Frame Rate: "+ofToString(senders[j]->frameRate,1)+" fps", x, y+=15);
             ofDrawBitmapString("bitrate: "+ofToString(senders[j]->bitrate)+" kbits/s", x, y+=15);
             ofDrawBitmapString("URL: "+senders[j]->url, x, y+=35);
-            ofDrawBitmapString("Preset: "+senders[j]->preset, x, y+=15);
+            ofDrawBitmapString("Preset: "+senders[j]->preset, x, y+=35);
             
             }
             
@@ -139,7 +139,6 @@ void testApp::draw(){
                 if (receivers[j]) {
                     if(ofToString(receivers[j]->host).compare(ofToString(currentNode->hostname)) == 0){
                         if (receivers[j]->isConnected()) {
-                            cout << "FOUND" + currentNode->hostname << endl;
                             receivers[j]->draw(0, 0, width, height);
                             
                         } else {

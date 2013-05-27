@@ -37,9 +37,6 @@ class testApp : public ofBaseApp{
     bool settingsLoaded;
 
     ofxStreamerSender * senders[2];
-
-    //For latency calculation
-    ofxOscReceiver oscReceiver;
   
     ofxStreamerReceiver * receivers[2];
 
