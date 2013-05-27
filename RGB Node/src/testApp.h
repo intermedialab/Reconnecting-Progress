@@ -36,7 +36,7 @@ class testApp : public ofBaseApp{
     ofxXmlSettings XML;
     bool settingsLoaded;
 
-    ofxStreamerSender sender;
+    ofxStreamerSender * senders[2];
 
     //For latency calculation
     ofxOscReceiver oscReceiver;
@@ -49,8 +49,4 @@ class testApp : public ofBaseApp{
     
     unsigned char * data ;
     
-    long long sendPingTime;
-    bool sendPing;
-    
-    int latency;
 };

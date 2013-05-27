@@ -39,11 +39,6 @@ void testApp::setup(){
     
     portNumber = XML.getValue("global:network:port", 1234);
     
-    //sender.setup(640, 480, "jive.local", 1234);
-    //sender.setup(800, 800.*9./16., localHostname, portNumber);
-    
-    sender.setup(width, height);
-    
     data = (unsigned char*) malloc(sizeof(char)* width * height * 3*10);
     
     grabber.initGrabber(width, height);
@@ -68,13 +63,16 @@ void testApp::setup(){
         } else {
             receivers[receiverNumber] = new ofxStreamerReceiver();
             receivers[receiverNumber]->setup(portNumber,nodes[i]->hostname);
-            receiverNumber++;
             
+            senders[receiverNumber] = new ofxStreamerSender();
+            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, portNumber);
+
+            receiverNumber++;
+                        
         }
     }
     //oscReceiver.setup(9999);
     
-    latency = 0;
     if(nodeMe){
         cout << nodeMe->color << endl;
     }
@@ -85,32 +83,16 @@ void testApp::setup(){
 void testApp::update(){
     grabber.update();
     
-    if(sendPing){
-        sendPing = false;
-        sendPingTime = ofGetElapsedTimeMillis();
-        
-        
-        unsigned char bytes[width*height*3];
-        for(int i=0;i<width*height*3;i++){
-            bytes[i] = 255;
-        }
-        
-        
-        sender.encodeFrame(bytes, width*height*3);
-        sender.sendFrame();
-        
-    }
-    else if(grabber.isFrameNew()){
+    if(grabber.isFrameNew()){
         
         ofBuffer buffer;
         buffer.set((char*)data, width*height * 3);
-        
         inputImage.setFromPixels(data, width, height, OF_IMAGE_COLOR);
         
-        sender.encodeFrame(grabber.getPixels(), width * height * 3);
-        //    x264Encoder.encodeFrame(data, 640 * 480 * 3);
-        
-        sender.sendFrame();
+        for (int j = 0; j < 2 ; j++) {
+            senders[j]->encodeFrame(grabber.getPixels(), width * height * 3);
+            senders[j]->sendFrame();
+        }
     }
     
     for (int i = 0; i < 2 ; i++) {
@@ -121,19 +103,7 @@ void testApp::update(){
             receivers[i]->update();
         }
     }
-    
-    
-    /* if(oscReceiver.hasWaitingMessages()){
-     ofxOscMessage msg;
-     oscReceiver.getNextMessage(&msg);
-     
-     cout<<"Got message "<<msg.getAddress()<<endl;
-     
-     latency = ofGetElapsedTimeMillis() -  sendPingTime;
-     
-     cout<<"Diff "<<latency<<endl;
-     }*/
-    
+        
 }
 
 //--------------------------------------------------------------
@@ -153,13 +123,16 @@ void testApp::draw(){
         if(currentNode == nodeMe){
             grabber.draw(0, 0, width, height);
             
-            ofDrawBitmapString("Streamer Sender Example", x, y);
-            ofDrawBitmapString("Frame Num: \t\t"+ofToString(sender.frameNum), x, y+=20);
-            ofDrawBitmapString("Frame Rate: "+ofToString(sender.frameRate,1)+" fps", x, y+=15);
-            ofDrawBitmapString("bitrate: "+ofToString(sender.bitrate)+" kbits/s", x, y+=15);
-            ofDrawBitmapString("URL: "+sender.url, x, y+=35);
-            ofDrawBitmapString("Preset: "+sender.preset, x, y+=15);
+            for (int j = 0; j < 2 ; j++) {
 
+            ofDrawBitmapString("Streamer Sender Example", x, y);
+            ofDrawBitmapString("Frame Num: \t\t"+ofToString(senders[j]->frameNum), x, y+=20);
+            ofDrawBitmapString("Frame Rate: "+ofToString(senders[j]->frameRate,1)+" fps", x, y+=15);
+            ofDrawBitmapString("bitrate: "+ofToString(senders[j]->bitrate)+" kbits/s", x, y+=15);
+            ofDrawBitmapString("URL: "+senders[j]->url, x, y+=35);
+            ofDrawBitmapString("Preset: "+senders[j]->preset, x, y+=15);
+            
+            }
             
         } else {
             for (int j = 0; j < 2 ; j++) {
@@ -192,7 +165,6 @@ void testApp::draw(){
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-    sendPing = true;
     if(key == 'f'){
         ofToggleFullscreen();
     }
