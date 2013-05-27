@@ -1,0 +1,31 @@
+<global>
+    <network>
+        <port>1234</port>
+    </network>
+</global>
+<nodes>
+    <node1>
+        <hostname>olekristensen.local</hostname>
+        <color>
+            <r>255</r>
+            <g>0</g>
+            <b>0</b>
+        </color>
+    </node1>
+    <node2>
+        <hostname>4.local</hostname>
+        <color>
+            <r>255</r>
+            <g>0</g>
+            <b>0</b>
+        </color>
+    </node2>
+    <node3>
+        <hostname>5.local</hostname>
+        <color>
+            <r>255</r>
+            <g>0</g>
+            <b>0</b>
+        </color>
+    </node3>
+</nodes>
