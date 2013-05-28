@@ -56,9 +56,11 @@ void testApp::setup(){
         
         if(ofToString(nodes[i]->hostname).compare(ofToString(localHostname)) == 0){
             nodeMe = nodes[i];
-            cout << "i am " << nodeMe->hostname << endl;
+            cout << "I am " << nodeMe->hostname << endl;
         }
     }
+    
+    sender.setup(width, height,"localhost", portNumber);
 
     for(int i = 0; i < 3; i++){
 
@@ -73,10 +75,7 @@ void testApp::setup(){
             receiverNumber++;
                         
         }
-    }
-
-    sender.setup(width, height,nodeMe->hostname, portNumber); // no prefix here
-    
+    }    
     
     
 }
@@ -149,10 +148,11 @@ void testApp::draw(){
         } else {
             for (int j = 0; j < 2 ; j++) {
                 if (receivers[j]) {
-                    if(ofToString(receivers[j]->host).compare(ofToString(currentNode->hostname)) == 0){
+                    if((receivers[j]->host).find(currentNode->hostname) != std::string::npos){
                         if (receivers[j]->isConnected()) {
                             receivers[j]->draw(0, 0, width, height);
-                            
+                            cout << receivers[j]->host << " is connected"
+                            << endl;
                         } else {
                             ofDrawBitmapString("connecting to " + ofToString(receivers[j]->host),  x, y+=35);
                         }
