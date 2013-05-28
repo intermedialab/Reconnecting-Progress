@@ -5,7 +5,7 @@
 </global>
 <nodes>
     <node1>
-        <hostname>olekristensen.local</hostname>
+        <hostname>2.local</hostname>
         <color>
             <r>255</r>
             <g>0</g>
@@ -23,7 +23,7 @@
         <portrange>10010</portrange>
     </node2>
     <node3>
-        <hostname>5.local</hostname>
+        <hostname>1.local</hostname>
         <color>
             <r>0</r>
             <g>0</g>
