@@ -1,7 +1,7 @@
 #include "testApp.h"
 
-int width = 800;
 int height = 600;
+int width = 600*16/9;
 
 //--------------------------------------------------------------
 void testApp::setup(){
