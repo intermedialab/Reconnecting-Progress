@@ -67,14 +67,18 @@ void testApp::setup(){
             receivers[receiverNumber] = new ofxStreamerReceiver();
             receivers[receiverNumber]->setup(portNumber,"udp://" + nodes[i]->hostname); // remember udp prefix on receiver!!!
 
-            senders[receiverNumber] = new ofxStreamerSender();
-            senders[receiverNumber]->setup(width, height,nodeMe->hostname, portNumber); // no prefix here
+//            senders[receiverNumber] = new ofxStreamerSender();
+//            senders[receiverNumber]->setup(width, height,nodeMe->hostname, portNumber); // no prefix here
 
             receiverNumber++;
                         
         }
     }
-        
+
+    sender.setup(width, height,nodeMe->hostname, portNumber); // no prefix here
+    
+    
+    
 }
 
 //--------------------------------------------------------------
@@ -87,10 +91,13 @@ void testApp::update(){
         buffer.set((char*)data, width*height * 3);
         inputImage.setFromPixels(data, width, height, OF_IMAGE_COLOR);
         
-        for (int j = 0; j < 2 ; j++) {
+/*        for (int j = 0; j < 2 ; j++) {
             senders[j]->encodeFrame(grabber.getPixels(), width * height * 3);
             senders[j]->sendFrame();
         }
+*/
+        sender.encodeFrame(grabber.getPixels(), width * height * 3);
+        sender.sendFrame();
     }
     
     for (int i = 0; i < 2 ; i++) {
@@ -121,16 +128,23 @@ void testApp::draw(){
         if(currentNode == nodeMe){
             grabber.draw(0, 0, width, height);
             
+            /*
             for (int j = 0; j < 2 ; j++) {
-
             ofDrawBitmapString("Streamer Sender Example", x, y+=35);
             ofDrawBitmapString("Frame Num: \t\t"+ofToString(senders[j]->frameNum), x, y+=20);
             ofDrawBitmapString("Frame Rate: "+ofToString(senders[j]->frameRate,1)+" fps", x, y+=15);
             ofDrawBitmapString("bitrate: "+ofToString(senders[j]->bitrate)+" kbits/s", x, y+=15);
             ofDrawBitmapString("URL: "+senders[j]->url, x, y+=35);
             ofDrawBitmapString("Preset: "+senders[j]->preset, x, y+=35);
-            
             }
+             */
+            ofDrawBitmapString("Streamer Sender Example", x, y+=35);
+            ofDrawBitmapString("Frame Num: \t\t"+ofToString(sender.frameNum), x, y+=20);
+            ofDrawBitmapString("Frame Rate: "+ofToString(sender.frameRate,1)+" fps", x, y+=15);
+            ofDrawBitmapString("bitrate: "+ofToString(sender.bitrate)+" kbits/s", x, y+=15);
+            ofDrawBitmapString("URL: "+sender.url, x, y+=35);
+            ofDrawBitmapString("Preset: "+sender.preset, x, y+=35);
+
             
         } else {
             for (int j = 0; j < 2 ; j++) {
