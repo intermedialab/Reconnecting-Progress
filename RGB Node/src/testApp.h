@@ -31,6 +31,8 @@ class testApp : public ofBaseApp{
     nodePoint * nodes[3];
     nodePoint * nodeMe;
     
+    bool presentationMode;
+    
     std::string localHostname;
     
     int portNumber;
