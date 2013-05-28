@@ -1,7 +1,7 @@
 #include "testApp.h"
 
+int width = 800;
 int height = 600;
-int width = 600*16/9;
 
 //--------------------------------------------------------------
 void testApp::setup(){
@@ -10,7 +10,8 @@ void testApp::setup(){
     
     ofLogLevel(OF_LOG_WARNING);
     
-    presentationMode = false;
+    presentationMode = true;
+    mirror = true;
     
     // set own hostname
     
@@ -120,6 +121,9 @@ void testApp::draw(){
         
         
         if(presentationMode){
+            ofPushMatrix();
+
+            
             float screenAspect = ofGetWidth() * 1. / ofGetHeight();
             
             if(currentNode == nodeMe){
@@ -132,7 +136,11 @@ void testApp::draw(){
                 ofRotate(90,0, 0, 1);
                 ofScale(ofGetHeight()*1./grabber.width,ofGetHeight()*1./grabber.width);
                 ofTranslate(-grabber.width*.5, -grabber.height*.5);
-                grabber.draw(0,0,grabber.width, grabber.height);
+                if(mirror){
+                    grabber.draw(0,grabber.height,grabber.width, -grabber.height);
+                } else {
+                    grabber.draw(0,0,grabber.width, grabber.height);
+                }
                 ofPopMatrix();
 
             } else {
@@ -149,7 +157,12 @@ void testApp::draw(){
                                 ofRotate(90,0, 0, 1);
                                 ofScale(ofGetHeight()*1./receivers[j]->width,ofGetHeight()*1./receivers[j]->width);
                                 ofTranslate(-receivers[j]->width*.5, -receivers[j]->height*.5);
+                                
+                                if(mirror){
+                                    receivers[j]->draw(0,receivers[j]->height,receivers[j]->width, -receivers[j]->height);
+                                } else {
                                 receivers[j]->draw(0,0,receivers[j]->width, receivers[j]->height);
+                                }
                                 ofPopMatrix();
                             }
                         }
@@ -157,7 +170,7 @@ void testApp::draw(){
                     }
                 }
             }
-            
+            ofPopMatrix();
             
         } else {
             
@@ -206,6 +219,9 @@ void testApp::draw(){
 void testApp::keyPressed(int key){
     if(key == 'p'){
         presentationMode = !presentationMode;
+    }
+    if(key == 'm'){
+        mirror = !mirror;
     }
     if(key == 'f'){
         ofToggleFullscreen();

@@ -32,6 +32,7 @@ class testApp : public ofBaseApp{
     nodePoint * nodeMe;
     
     bool presentationMode;
+    bool mirror;
     
     std::string localHostname;
     
