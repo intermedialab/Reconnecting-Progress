@@ -38,8 +38,7 @@ class testApp : public ofBaseApp{
     ofxXmlSettings XML;
     bool settingsLoaded;
 
-//    ofxStreamerSender * senders[2];
-    ofxStreamerSender sender;
+    ofxStreamerSender * senders[2];
   
     ofxStreamerReceiver * receivers[2];
 
