@@ -11,6 +11,7 @@
             <g>0</g>
             <b>0</b>
         </color>
+        <portrange>10000</portrange>
     </node1>
     <node2>
         <hostname>4.local</hostname>
@@ -19,6 +20,7 @@
             <g>255</g>
             <b>0</b>
         </color>
+        <portrange>10010</portrange>
     </node2>
     <node3>
         <hostname>5.local</hostname>
@@ -27,5 +29,6 @@
             <g>0</g>
             <b>255</b>
         </color>
+        <portrange>10020</portrange>
     </node3>
 </nodes>

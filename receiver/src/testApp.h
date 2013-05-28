@@ -21,9 +21,7 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
         void exit();
     
-    ofxStreamerReceiver receiverR;
-    ofxStreamerReceiver receiverG;
-    ofxStreamerReceiver receiverB;
+    ofxStreamerReceiver receiver;
     
     //For latency calculation
     ofxOscSender oscSender;

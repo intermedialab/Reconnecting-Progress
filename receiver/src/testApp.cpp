@@ -6,20 +6,16 @@ void testApp::setup(){
     ofSetWindowPosition(0, 540);
 
     ofLogLevel(OF_LOG_WARNING);
-    receiverR.setup(1234);
-    receiverG.setup(5000,"233.99.61.106");
-    receiverB.setup(1236);
+    receiver.setup(9999, "udp://olekristensen.local");
     
-    oscSender.setup("localhost.local", 9999);
+    oscSender.setup("localhost.local", 6543);
     
     
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-    receiverR.update();
-    receiverG.update();
-    receiverB.update();
+    receiver.update();
 }
 
 //--------------------------------------------------------------
@@ -30,12 +26,7 @@ void testApp::draw(){
     ofEnableBlendMode(OF_BLENDMODE_ADD);
     
    // if(receiver.isFrameNew()) {
-    ofSetColor(255,0,0);
-    receiverR.draw(0, 0);
-    ofSetColor(0, 255,0);
-    receiverG.draw(0, 0);
-    ofSetColor(0, 0, 255);
-    receiverB.draw(0, 0);
+    receiver.draw(0, 0);
     
       /*  if(receiver.getPixels()[0] == 255){
             ofxOscMessage msg;
@@ -48,19 +39,16 @@ void testApp::draw(){
     int y = 15;
     int x = 650;
     
-    /*
     ofDrawBitmapString("Streamer Receiver Example", 650, y);
     ofDrawBitmapString("Frame Num: \t\t"+ofToString(receiver.frameNum), 650, y+=20);
     ofDrawBitmapString("Frame Rate: "+ofToString(receiver.frameRate,1)+" fps", 650, y+=15);
     ofDrawBitmapString("bitrate: "+ofToString(receiver.bitrate)+" kbits/s", 650, y+=15);
     ofDrawBitmapString("URL: "+receiver.url, 650, y+=35);
-    */
+    
 }
 
 void testApp::exit(){
-    receiverR.close();
-    receiverG.close();
-    receiverB.close();
+    receiver.close();
 }
 
 //--------------------------------------------------------------

@@ -52,6 +52,7 @@ void testApp::setup(){
         nodes[i]->color.r = XML.getValue("nodes:node" + ofToString(i+1) + ":color:r", 255);
         nodes[i]->color.g = XML.getValue("nodes:node" + ofToString(i+1) + ":color:g", 255);
         nodes[i]->color.b = XML.getValue("nodes:node" + ofToString(i+1) + ":color:b", 255);
+        nodes[i]->portRange = XML.getValue("nodes:node" + ofToString(i+1) + ":portrange", 10000);
         nodes[i]->index = i;
         
         if(ofToString(nodes[i]->hostname).compare(ofToString(localHostname)) == 0){
@@ -65,10 +66,10 @@ void testApp::setup(){
         if(ofToString(nodes[i]->hostname).compare(ofToString(localHostname)) != 0){
         
             receivers[receiverNumber] = new ofxStreamerReceiver();
-            receivers[receiverNumber]->setup(portNumber,"udp://" + nodes[i]->hostname); // remember udp prefix on receiver!!!
+            receivers[receiverNumber]->setup(nodes[i]->portRange+nodeMe->index,"udp://" + nodes[i]->hostname); // remember udp prefix on receiver!!!
 
             senders[receiverNumber] = new ofxStreamerSender();
-            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, portNumber); // no prefix here
+            senders[receiverNumber]->setup(width, height,nodes[i]->hostname, nodeMe->portRange+nodes[i]->index); // no prefix here
 
             receiverNumber++;
                         

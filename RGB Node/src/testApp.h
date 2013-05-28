@@ -8,7 +8,7 @@
 struct nodePoint {
     string hostname;
     ofColor color;
-    int sendsToPort;
+    int portRange;
     int index;
 };
 
