@@ -5,7 +5,7 @@ int height = 600;
 
 //--------------------------------------------------------------
 void testApp::setup(){
-    ofSetWindowPosition(ofGetWidth()+1, 0);
+    ofSetWindowPosition(ofGetScreenWidth()+1, 0);
     ofToggleFullscreen();
     ofSetFrameRate(70);
     
